@@ -19,7 +19,7 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            overflow-x: auto; /* 수평 스크롤 가능하도록 변경 */
         }
         h1 {
             text-align: center;
@@ -52,16 +52,17 @@
         }
         .seating-area {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start; /* 좌측 정렬로 변경 */
             margin-bottom: 20px;
             overflow-x: auto;
             max-width: 100%;
+            padding: 0;
         }
         .section {
             flex: 0 0 auto;
-            margin: 0 10px;
+            margin: 0; /* 섹션 간 여백 제거 */
             text-align: center;
-            min-width: 200px;
+            min-width: 100px;
         }
         .section-title {
             display: inline-block;
@@ -223,8 +224,6 @@
             </div>
         </div>
         
-        <!-- 문 라벨을 제거했습니다 -->
-        
         <div class="summary">
             <h2>선택된 좌석 정보</h2>
             <div class="summary-details">
@@ -316,13 +315,13 @@
                 const rowContainer = document.createElement('div');
                 rowContainer.className = 'seats-row';
                 
-                // 각 구역별 좌석 정렬 - 실제 이미지와 동일하게 배치
+                // 각 구역별 좌석 정렬 - 픽셀 단위로 정확히 배치
                 let startPosition = 0;
                 
                 // A구역 정렬 - 이미지에 맞게 정확히 조정
                 if (sectionClass === 'section-a') {
-                    if (row === 1) startPosition = 50;      // 첫 번째 열 (이미지 기준)
-                    else if (row === 2) startPosition = 0;  // 두 번째 열은 왼쪽에서 시작
+                    if (row === 1) startPosition = 50;      // 첫 번째 열
+                    else if (row === 2) startPosition = 0;  // 두 번째 열
                     else if (row === 3) startPosition = 10; // 세 번째 열
                     else if (row === 4) startPosition = 10; // 네 번째 열
                     else if (row === 5) startPosition = 45; // 다섯 번째 열
@@ -330,27 +329,117 @@
                     else if (row === 7) startPosition = 80; // 일곱 번째 열
                     else if (row === 8) startPosition = 80; // 여덟 번째 열
                 } 
-                // B구역 정렬 - 중앙 구역
+                // B구역 정렬 - A구역 기준에서 픽셀 단위로 계산
                 else if (sectionClass === 'section-b') {
-                    if (row === 1) startPosition = 0;
-                    else if (row === 2) startPosition = 0;
-                    else if (row === 3) startPosition = 0;
-                    else if (row === 4) startPosition = 0;
-                    else if (row === 5) startPosition = 0;
-                    else if (row === 6) startPosition = 0;
-                    else if (row === 7) startPosition = 0;
-                    else if (row === 8) startPosition = 0;
+                    // A구역 픽셀 위치 + A구역 좌석 너비 + 간격(34px)
+                    // 좌석 하나의 너비는 약 34px (30px + 여백 4px)
+                    const seatWidth = 34;
+                    
+                    if (row === 1) {
+                        const aPosition = 50; // A구역 1열 시작 위치
+                        const aSeats = seatData.sectionA[1]; // A구역 1열 좌석 수
+                        startPosition = aPosition + (aSeats * seatWidth) + 34; // A구역 끝 + 간격
+                    }
+                    else if (row === 2) {
+                        const aPosition = 0; // A구역 2열 시작 위치
+                        const aSeats = seatData.sectionA[2]; // A구역 2열 좌석 수
+                        startPosition = aPosition + (aSeats * seatWidth) + 34;
+                    }
+                    else if (row === 3) {
+                        const aPosition = 10; // A구역 3열 시작 위치
+                        const aSeats = seatData.sectionA[3]; // A구역 3열 좌석 수
+                        startPosition = aPosition + (aSeats * seatWidth) + 34;
+                    }
+                    else if (row === 4) {
+                        const aPosition = 10; // A구역 4열 시작 위치
+                        const aSeats = seatData.sectionA[4]; // A구역 4열 좌석 수
+                        startPosition = aPosition + (aSeats * seatWidth) + 34;
+                    }
+                    else if (row === 5) {
+                        const aPosition = 45; // A구역 5열 시작 위치
+                        const aSeats = seatData.sectionA[5]; // A구역 5열 좌석 수
+                        startPosition = aPosition + (aSeats * seatWidth) + 34;
+                    }
+                    else if (row === 6) {
+                        const aPosition = 45; // A구역 6열 시작 위치
+                        const aSeats = seatData.sectionA[6]; // A구역 6열 좌석 수
+                        startPosition = aPosition + (aSeats * seatWidth) + 34;
+                    }
+                    else if (row === 7) {
+                        const aPosition = 80; // A구역 7열 시작 위치
+                        const aSeats = seatData.sectionA[7]; // A구역 7열 좌석 수
+                        startPosition = aPosition + (aSeats * seatWidth) + 34;
+                    }
+                    else if (row === 8) {
+                        const aPosition = 80; // A구역 8열 시작 위치
+                        const aSeats = seatData.sectionA[8]; // A구역 8열 좌석 수
+                        startPosition = aPosition + (aSeats * seatWidth) + 34;
+                    }
                 }
-                // C구역 정렬 - A구역과 대칭
+                // C구역 정렬 - B구역 기준에서 픽셀 단위로 계산
                 else if (sectionClass === 'section-c') {
-                    if (row === 1) startPosition = 50;
-                    else if (row === 2) startPosition = 0;
-                    else if (row === 3) startPosition = 10;
-                    else if (row === 4) startPosition = 10;
-                    else if (row === 5) startPosition = 45;
-                    else if (row === 6) startPosition = 45;
-                    else if (row === 7) startPosition = 80;
-                    else if (row === 8) startPosition = 80;
+                    // B구역 픽셀 위치 + B구역 좌석 너비 + 간격(34px)
+                    const seatWidth = 34;
+                    
+                    if (row === 1) {
+                        // A구역 시작 위치
+                        const aPosition = 50;
+                        const aSeats = seatData.sectionA[1];
+                        // B구역 시작 위치 = A구역 시작 위치 + (A구역 좌석 수 * 좌석 너비) + 간격
+                        const bPosition = aPosition + (aSeats * seatWidth) + 34;
+                        const bSeats = seatData.sectionB[1];
+                        // C구역 시작 위치 = B구역 시작 위치 + (B구역 좌석 수 * 좌석 너비) + 간격
+                        startPosition = bPosition + (bSeats * seatWidth) + 34;
+                    }
+                    else if (row === 2) {
+                        const aPosition = 0;
+                        const aSeats = seatData.sectionA[2];
+                        const bPosition = aPosition + (aSeats * seatWidth) + 34;
+                        const bSeats = seatData.sectionB[2];
+                        startPosition = bPosition + (bSeats * seatWidth) + 34;
+                    }
+                    else if (row === 3) {
+                        const aPosition = 10;
+                        const aSeats = seatData.sectionA[3];
+                        const bPosition = aPosition + (aSeats * seatWidth) + 34;
+                        const bSeats = seatData.sectionB[3];
+                        startPosition = bPosition + (bSeats * seatWidth) + 34;
+                    }
+                    else if (row === 4) {
+                        const aPosition = 10;
+                        const aSeats = seatData.sectionA[4];
+                        const bPosition = aPosition + (aSeats * seatWidth) + 34;
+                        const bSeats = seatData.sectionB[4];
+                        startPosition = bPosition + (bSeats * seatWidth) + 34;
+                    }
+                    else if (row === 5) {
+                        const aPosition = 45;
+                        const aSeats = seatData.sectionA[5];
+                        const bPosition = aPosition + (aSeats * seatWidth) + 34;
+                        const bSeats = seatData.sectionB[5];
+                        startPosition = bPosition + (bSeats * seatWidth) + 34;
+                    }
+                    else if (row === 6) {
+                        const aPosition = 45;
+                        const aSeats = seatData.sectionA[6];
+                        const bPosition = aPosition + (aSeats * seatWidth) + 34;
+                        const bSeats = seatData.sectionB[6];
+                        startPosition = bPosition + (bSeats * seatWidth) + 34;
+                    }
+                    else if (row === 7) {
+                        const aPosition = 80;
+                        const aSeats = seatData.sectionA[7];
+                        const bPosition = aPosition + (aSeats * seatWidth) + 34;
+                        const bSeats = seatData.sectionB[7];
+                        startPosition = bPosition + (bSeats * seatWidth) + 34;
+                    }
+                    else if (row === 8) {
+                        const aPosition = 80;
+                        const aSeats = seatData.sectionA[8];
+                        const bPosition = aPosition + (aSeats * seatWidth) + 34;
+                        const bSeats = seatData.sectionB[8];
+                        startPosition = bPosition + (bSeats * seatWidth) + 34;
+                    }
                 }
                 
                 // 좌석 행에 시작 위치 적용
@@ -367,7 +456,7 @@
                     // 좌석 클릭 이벤트
                     seat.addEventListener('click', toggleSeat);
                     
-                        rowContainer.appendChild(seat);
+                    rowContainer.appendChild(seat);
                 }
                 
                 monthContainer.appendChild(rowContainer);
