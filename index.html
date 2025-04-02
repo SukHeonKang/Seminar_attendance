@@ -330,19 +330,19 @@
                     else if (row === 5) startPosition = 15;  // 5열: 기존 위치 - 1칸 왼쪽
                     else if (row === 6) startPosition = 0;  // 6열: 기존 위치 - 1.5칸 왼쪽
                     else if (row === 7) startPosition = 15;  // 7열: 기존 위치 - 2칸 왼쪽
-                    else if (row === 8) startPosition = 80 - 68;  // 8열: 기존 위치 - 2칸 왼쪽
+                    else if (row === 8) startPosition = 15;  // 8열: 기존 위치 - 2칸 왼쪽
                 } 
                 // B구역 정렬 - A구역 끝에서 약 10px 떨어진 위치에서 시작
                 else if (sectionClass === 'section-b') {
                     // A구역 끝 + 10px = B구역 시작
-                    if (row === 1) startPosition = 158+16*6;      // 1열 B구역 시작
-                    else if (row === 2) startPosition = 158+16*5; // 2열 B구역 시작
-                    else if (row === 3) startPosition = 158+16*4; // 3열 B구역 시작
-                    else if (row === 4) startPosition = 158+16*3; // 4열 B구역 시작
-                    else if (row === 5) startPosition = 158+16*2; // 5열 B구역 시작
-                    else if (row === 6) startPosition = 158+16; // 6열 B구역 시작
-                    else if (row === 7) startPosition = 158; // 7열 B구역 시작
-                    else if (row === 8) startPosition = 124; // 8열 B구역 시작
+                    if (row === 1) startPosition = 83  +  30*6+4*6 ;      // 1열 B구역 시작
+                    else if (row === 2) startPosition = 0  +  30*8+4*8; // 2열 B구역 시작
+                    else if (row === 3) startPosition = 15  +  30*7+4*7; // 3열 B구역 시작
+                    else if (row === 4) startPosition = 0  +  30*7+4*7; // 4열 B구역 시작
+                    else if (row === 5) startPosition = 15  +  30*6+4*6; // 5열 B구역 시작
+                    else if (row === 6) startPosition = 0  +  30*6+4*6; // 6열 B구역 시작
+                    else if (row === 7) startPosition = 15  +  30*5+4*5; // 7열 B구역 시작
+                    else if (row === 8) startPosition = 0   +  30*7+4*7; // 8열 B구역 시작
                 }
                 // C구역 정렬 - B구역을 기준으로 A구역과 대칭
                 else if (sectionClass === 'section-c') {
