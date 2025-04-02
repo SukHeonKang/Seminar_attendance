@@ -22,6 +22,9 @@
             box-sizing: border-box;
             overflow-x: auto; /* 가로 스크롤 허용 */
         }
+        .content-wrapper {
+            min-width: 800px; /* 모든 내용의 최소 너비 설정 */
+        }
         h1 {
             text-align: center;
             color: #333;
@@ -54,10 +57,6 @@
             height: 20px;
             border-radius: 3px;
             margin-right: 5px;
-        }
-        .seating-content {
-            min-width: 800px; /* 최소 너비 설정 */
-            position: relative;
         }
         .seating-rows {
             display: flex;
@@ -158,58 +157,46 @@
             flex-direction: column-reverse;
         }
         
+        /* 스크롤 안내 메시지 */
+        .scroll-note {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+            color: #666;
+            font-size: 12px;
+        }
+        
         /* 모바일 대응 스타일 */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 20px;
-            }
-            .container {
-                padding: 10px;
-            }
-            .summary-section {
-                min-width: 80px;
-            }
-            .summary-section p {
-                font-size: 14px;
-                margin: 5px 0;
-            }
-            .view-toggle-button {
-                font-size: 14px;
-                padding: 8px 15px;
-            }
+        @media (max-width: 850px) {
             .scroll-note {
                 display: block;
-                text-align: center;
-                margin: 10px 0;
-                color: #666;
-                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container" id="main-container">
-        <h1>세미나 출석 시스템</h1>
-        
-        <div class="legend">
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #809bce;"></div>
-                <span>A구역</span>
+        <div class="content-wrapper">
+            <h1>세미나 출석 시스템</h1>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #809bce;"></div>
+                    <span>A구역</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #8fd694;"></div>
+                    <span>B구역</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f9a875;"></div>
+                    <span>C구역</span>
+                </div>
             </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #8fd694;"></div>
-                <span>B구역</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #f9a875;"></div>
-                <span>C구역</span>
-            </div>
-        </div>
-        
-        <!-- 시야 변환 버튼 추가 -->
-        <button id="view-toggle" class="view-toggle-button">시야변환</button>
-        
-        <div class="seating-content">
+            
+            <!-- 시야 변환 버튼 추가 -->
+            <button id="view-toggle" class="view-toggle-button">시야변환</button>
+            
             <!-- 모바일 환경에서 스크롤 안내 메시지 -->
             <div class="scroll-note">← 좌우로 스크롤하여 모든 좌석을 확인하실 수 있습니다 →</div>
             
@@ -218,22 +205,22 @@
             
             <!-- 좌석 배치는 이곳에 동적으로 생성됩니다 -->
             <div id="seating-rows" class="seating-rows"></div>
-        </div>
-        
-        <div class="summary">
-            <h2>선택된 좌석 정보</h2>
-            <div class="summary-details">
-                <div class="summary-section">
-                    <p>A구역: <span id="section-a-count">0</span>석</p>
-                </div>
-                <div class="summary-section">
-                    <p>B구역: <span id="section-b-count">0</span>석</p>
-                </div>
-                <div class="summary-section">
-                    <p>C구역: <span id="section-c-count">0</span>석</p>
-                </div>
-                <div class="summary-section">
-                    <p>총 선택: <span id="total-count">0</span>석</p>
+            
+            <div class="summary">
+                <h2>선택된 좌석 정보</h2>
+                <div class="summary-details">
+                    <div class="summary-section">
+                        <p>A구역: <span id="section-a-count">0</span>석</p>
+                    </div>
+                    <div class="summary-section">
+                        <p>B구역: <span id="section-b-count">0</span>석</p>
+                    </div>
+                    <div class="summary-section">
+                        <p>C구역: <span id="section-c-count">0</span>석</p>
+                    </div>
+                    <div class="summary-section">
+                        <p>총 선택: <span id="total-count">0</span>석</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -413,7 +400,6 @@
         function toggleView() {
             const container = document.getElementById('main-container');
             const stage = document.getElementById('stage');
-            const seatingContent = document.querySelector('.seating-content');
             const seatingRows = document.getElementById('seating-rows');
             
             isViewInverted = !isViewInverted;
@@ -422,40 +408,26 @@
                 // 반전된 시야로 변경
                 container.classList.add('inverted-view');
                 // 스테이지 순서 변경
-                seatingContent.removeChild(stage);
-                seatingContent.appendChild(stage);
+                stage.parentNode.removeChild(stage);
+                container.querySelector('.content-wrapper').appendChild(stage);
             } else {
                 // 원래 시야로 복원
                 container.classList.remove('inverted-view');
                 // 스테이지 순서 복원
-                seatingContent.removeChild(stage);
-                seatingContent.insertBefore(stage, seatingRows);
+                stage.parentNode.removeChild(stage);
+                container.querySelector('.content-wrapper').insertBefore(stage, seatingRows);
             }
             
             // 좌석 다시 생성
             createSeats();
         }
 
-        // 모바일 환경에서 스크롤 안내 메시지 표시/숨김 설정
-        function toggleScrollNote() {
-            const scrollNote = document.querySelector('.scroll-note');
-            if (window.innerWidth <= 800) {
-                scrollNote.style.display = 'block';
-            } else {
-                scrollNote.style.display = 'none';
-            }
-        }
-
         // 페이지 로드 시 실행
         window.addEventListener('DOMContentLoaded', function() {
             createSeats();
-            toggleScrollNote();
             
             // 시야 변환 버튼 이벤트 리스너
             document.getElementById('view-toggle').addEventListener('click', toggleView);
-            
-            // 창 크기 변경 시 스크롤 안내 메시지 표시/숨김 토글
-            window.addEventListener('resize', toggleScrollNote);
         });
     </script>
 </body>
