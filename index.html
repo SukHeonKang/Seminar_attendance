@@ -143,10 +143,31 @@
         .summary-section {
             flex: 1;
         }
+        /* 시야 변환 버튼 스타일 */
+        .view-toggle-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .view-toggle-button:hover {
+            background-color: #45a049;
+        }
+        /* 반전된 시야에서 사용할 스타일 */
+        .inverted-view .seating-rows {
+            flex-direction: column-reverse;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="main-container">
         <h1>세미나 출석 시스템</h1>
         
         <div class="legend">
@@ -164,7 +185,11 @@
             </div>
         </div>
         
-        <div class="stage">STAGE</div>
+        <!-- 시야 변환 버튼 추가 -->
+        <button id="view-toggle" class="view-toggle-button">시야변환</button>
+        
+        <!-- 스테이지 - 기본 위치는 상단 -->
+        <div id="stage" class="stage">STAGE</div>
         
         <!-- 좌석 배치는 이곳에 동적으로 생성됩니다 -->
         <div id="seating-rows" class="seating-rows"></div>
@@ -209,10 +234,14 @@
             sectionC: 0,
             total: 0
         };
+        
+        // 시야 상태 변수
+        let isViewInverted = false;
 
         // 좌석 생성 함수
         function createSeats() {
             const seatingRowsContainer = document.getElementById('seating-rows');
+            seatingRowsContainer.innerHTML = ''; // 기존 좌석 초기화
             
             // 1~8열까지 생성
             for (let row = 1; row <= 8; row++) {
@@ -304,6 +333,12 @@
                 seat.dataset.row = row;
                 seat.dataset.number = i;
                 
+                // 선택 상태 유지
+                const seatKey = `${section}-${row}-${i}`;
+                if (selectedSeats[seatKey]) {
+                    seat.classList.add('selected');
+                }
+                
                 // 좌석 클릭 이벤트
                 seat.addEventListener('click', toggleSeat);
                 
@@ -311,12 +346,21 @@
             }
         }
 
+        // 선택한 좌석 상태 저장
+        const selectedSeats = {};
+
         // 좌석 선택/해제 토글
         function toggleSeat() {
-            this.classList.toggle('selected');
-            
             const section = this.dataset.section;
+            const row = this.dataset.row;
+            const number = this.dataset.number;
+            const seatKey = `${section}-${row}-${number}`;
+            
+            this.classList.toggle('selected');
             const isSelected = this.classList.contains('selected');
+            
+            // 선택 상태 저장
+            selectedSeats[seatKey] = isSelected;
             
             // 선택/해제에 따라 카운트 업데이트
             if (isSelected) {
@@ -339,8 +383,39 @@
             document.getElementById('total-count').textContent = counts.total;
         }
 
+        // 시야 변환 함수
+        function toggleView() {
+            const container = document.getElementById('main-container');
+            const stage = document.getElementById('stage');
+            const seatingRows = document.getElementById('seating-rows');
+            
+            isViewInverted = !isViewInverted;
+            
+            if (isViewInverted) {
+                // 반전된 시야로 변경
+                container.classList.add('inverted-view');
+                // 스테이지 순서 변경
+                container.removeChild(stage);
+                container.insertBefore(stage, document.querySelector('.summary'));
+            } else {
+                // 원래 시야로 복원
+                container.classList.remove('inverted-view');
+                // 스테이지 순서 복원
+                container.removeChild(stage);
+                container.insertBefore(stage, seatingRows);
+            }
+            
+            // 좌석 다시 생성
+            createSeats();
+        }
+
         // 페이지 로드 시 좌석 생성
-        window.addEventListener('DOMContentLoaded', createSeats);
+        window.addEventListener('DOMContentLoaded', function() {
+            createSeats();
+            
+            // 시야 변환 버튼 이벤트 리스너
+            document.getElementById('view-toggle').addEventListener('click', toggleView);
+        });
     </script>
 </body>
 </html>
