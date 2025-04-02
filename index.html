@@ -58,6 +58,9 @@
             border-radius: 3px;
             margin-right: 5px;
         }
+        .seating-area {
+            margin-bottom: 20px; /* 좌석 영역과 요약 정보 사이 간격 */
+        }
         .seating-rows {
             display: flex;
             flex-direction: column;
@@ -200,11 +203,14 @@
             <!-- 모바일 환경에서 스크롤 안내 메시지 -->
             <div class="scroll-note">← 좌우로 스크롤하여 모든 좌석을 확인하실 수 있습니다 →</div>
             
-            <!-- 스테이지 - 기본 위치는 상단 -->
-            <div id="stage" class="stage">STAGE</div>
-            
-            <!-- 좌석 배치는 이곳에 동적으로 생성됩니다 -->
-            <div id="seating-rows" class="seating-rows"></div>
+            <!-- 좌석 영역 컨테이너 -->
+            <div id="seating-area" class="seating-area">
+                <!-- 스테이지 - 기본 위치는 상단 -->
+                <div id="stage" class="stage">STAGE</div>
+                
+                <!-- 좌석 배치는 이곳에 동적으로 생성됩니다 -->
+                <div id="seating-rows" class="seating-rows"></div>
+            </div>
             
             <div class="summary">
                 <h2>선택된 좌석 정보</h2>
@@ -399,6 +405,7 @@
         // 시야 변환 함수
         function toggleView() {
             const container = document.getElementById('main-container');
+            const seatingArea = document.getElementById('seating-area');
             const stage = document.getElementById('stage');
             const seatingRows = document.getElementById('seating-rows');
             
@@ -407,15 +414,15 @@
             if (isViewInverted) {
                 // 반전된 시야로 변경
                 container.classList.add('inverted-view');
-                // 스테이지 순서 변경
-                stage.parentNode.removeChild(stage);
-                container.querySelector('.content-wrapper').appendChild(stage);
+                // 스테이지 순서 변경 - 좌석 영역 내에서만 이동
+                seatingArea.removeChild(stage);
+                seatingArea.appendChild(stage);
             } else {
                 // 원래 시야로 복원
                 container.classList.remove('inverted-view');
-                // 스테이지 순서 복원
-                stage.parentNode.removeChild(stage);
-                container.querySelector('.content-wrapper').insertBefore(stage, seatingRows);
+                // 스테이지 순서 복원 - 좌석 영역 내에서만 이동
+                seatingArea.removeChild(stage);
+                seatingArea.insertBefore(stage, seatingRows);
             }
             
             // 좌석 다시 생성
