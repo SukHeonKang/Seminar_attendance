@@ -323,13 +323,13 @@
                 if (sectionClass === 'section-a') {
                     // v22 코드의 기존 위치에서 요청한 칸수만큼 이동
                     // 좌석 1칸을 약 34px로 계산 (좌석 30px + 여백 4px)
-                    if (row === 1) startPosition = 50 + 34;       // 1열: 기존 위치 + 1칸 오른쪽
+                    if (row === 1) startPosition = 75 + 4*2;       // 1열: 기존 위치 + 1칸 오른쪽
                     else if (row === 2) startPosition = 0;        // 2열: 기존 위치 유지
-                    else if (row === 3) startPosition = 10;       // 3열: 기존 위치 유지
-                    else if (row === 4) startPosition = 10 - 17;  // 4열: 기존 위치 - 0.5칸 왼쪽
-                    else if (row === 5) startPosition = 45 - 34;  // 5열: 기존 위치 - 1칸 왼쪽
-                    else if (row === 6) startPosition = 45 - 51;  // 6열: 기존 위치 - 1.5칸 왼쪽
-                    else if (row === 7) startPosition = 80 - 68;  // 7열: 기존 위치 - 2칸 왼쪽
+                    else if (row === 3) startPosition = 15;       // 3열: 기존 위치 유지
+                    else if (row === 4) startPosition = 0;  // 4열: 기존 위치 - 0.5칸 왼쪽
+                    else if (row === 5) startPosition = 15;  // 5열: 기존 위치 - 1칸 왼쪽
+                    else if (row === 6) startPosition = 0;  // 6열: 기존 위치 - 1.5칸 왼쪽
+                    else if (row === 7) startPosition = 15;  // 7열: 기존 위치 - 2칸 왼쪽
                     else if (row === 8) startPosition = 80 - 68;  // 8열: 기존 위치 - 2칸 왼쪽
                 } 
                 // B구역 정렬 - A구역 끝에서 약 10px 떨어진 위치에서 시작
