@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>세미나 출석 시스템</title>
     <style>
         body {
@@ -13,11 +13,13 @@
         }
         .container {
             max-width: 1200px;
+            width: 100%;
             margin: 0 auto;
             background-color: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
         h1 {
             text-align: center;
@@ -52,11 +54,14 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 20px;
+            overflow-x: auto;
+            max-width: 100%;
         }
         .section {
-            flex: 1;
+            flex: 0 0 auto;
             margin: 0 10px;
             text-align: center;
+            min-width: 200px;
         }
         .section-title {
             display: inline-block;
@@ -92,9 +97,9 @@
         }
         .seats-row {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             justify-content: flex-start;
-            min-width: 300px;
+            min-width: fit-content;
             position: relative;
         }
         .seat {
@@ -110,6 +115,7 @@
             font-weight: bold;
             font-size: 14px;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
         .seat:hover {
             opacity: 0.8;
@@ -161,9 +167,12 @@
         .month-container {
             display: flex;
             margin-bottom: 5px;
+            width: 100%;
+            overflow: visible;
         }
         .months-label {
             width: 60px;
+            min-width: 60px;
             background-color: #ccc;
             color: black;
             display: flex;
@@ -172,6 +181,7 @@
             border-radius: 5px;
             padding: 5px 0;
             margin-right: 5px;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -235,16 +245,18 @@
     </div>
 
     <script>
-        // 좌석 데이터 정의 - 이미지의 실제 좌석 배치와 일치하도록 수정
+        // 좌석 데이터 정의 - 이미지의 실제 좌석 배치와 정확히 일치하도록 수정
         const seatData = {
             sectionA: {
-                // 열별 좌석 수
+                // 각 행별 좌석 수 (이미지와 정확히 일치)
                 1: 5, 2: 7, 3: 6, 4: 6, 5: 5, 6: 5, 7: 4, 8: 3
             },
             sectionB: {
+                // 각 행별 좌석 수 (이미지와 정확히 일치)
                 1: 5, 2: 6, 3: 7, 4: 8, 5: 9, 6: 10, 7: 11, 8: 8
             },
             sectionC: {
+                // 각 행별 좌석 수 (이미지와 정확히 일치)
                 1: 5, 2: 7, 3: 6, 4: 6, 5: 5, 6: 5, 7: 4, 8: 3
             }
         };
@@ -307,41 +319,38 @@
                 // 각 구역별 좌석 정렬 - 실제 이미지와 동일하게 배치
                 let startPosition = 0;
                 
-                // A구역 정렬
+                // A구역 정렬 - 이미지에 맞게 정확히 조정
                 if (sectionClass === 'section-a') {
-                    // 이미지와 일치하도록 각 행마다 좌석 정렬 조정
-                    if (row === 1) startPosition = 60;      // 첫 번째 열은 오른쪽으로 이동
+                    if (row === 1) startPosition = 50;      // 첫 번째 열 (이미지 기준)
                     else if (row === 2) startPosition = 0;  // 두 번째 열은 왼쪽에서 시작
-                    else if (row === 3) startPosition = 30; // 세 번째 열은 약간 오른쪽으로
-                    else if (row === 4) startPosition = 30; // 네 번째 열도 약간 오른쪽으로
-                    else if (row === 5) startPosition = 60; // 다섯 번째 열은 더 오른쪽으로
-                    else if (row === 6) startPosition = 60; // 여섯 번째 열도 더 오른쪽으로
-                    else if (row === 7) startPosition = 90; // 일곱 번째 열은 훨씬 오른쪽으로
-                    else if (row === 8) startPosition = 90; // 여덟 번째 열도 훨씬 오른쪽으로
+                    else if (row === 3) startPosition = 10; // 세 번째 열
+                    else if (row === 4) startPosition = 10; // 네 번째 열
+                    else if (row === 5) startPosition = 45; // 다섯 번째 열
+                    else if (row === 6) startPosition = 45; // 여섯 번째 열
+                    else if (row === 7) startPosition = 80; // 일곱 번째 열
+                    else if (row === 8) startPosition = 80; // 여덟 번째 열
                 } 
-                // B구역 정렬
+                // B구역 정렬 - 중앙 구역
                 else if (sectionClass === 'section-b') {
-                    // 각 행에 따른 시작 위치 조정
-                    if (row === 1) startPosition = 60;
-                    else if (row === 2) startPosition = 30;
+                    if (row === 1) startPosition = 0;
+                    else if (row === 2) startPosition = 0;
                     else if (row === 3) startPosition = 0;
                     else if (row === 4) startPosition = 0;
                     else if (row === 5) startPosition = 0;
                     else if (row === 6) startPosition = 0;
                     else if (row === 7) startPosition = 0;
-                    else if (row === 8) startPosition = 30;
+                    else if (row === 8) startPosition = 0;
                 }
-                // C구역 정렬
+                // C구역 정렬 - A구역과 대칭
                 else if (sectionClass === 'section-c') {
-                    // 각 행에 따른 시작 위치 조정
-                    if (row === 1) startPosition = 60;
+                    if (row === 1) startPosition = 50;
                     else if (row === 2) startPosition = 0;
-                    else if (row === 3) startPosition = 30;
-                    else if (row === 4) startPosition = 30;
-                    else if (row === 5) startPosition = 60;
-                    else if (row === 6) startPosition = 60;
-                    else if (row === 7) startPosition = 90;
-                    else if (row === 8) startPosition = 90;
+                    else if (row === 3) startPosition = 10;
+                    else if (row === 4) startPosition = 10;
+                    else if (row === 5) startPosition = 45;
+                    else if (row === 6) startPosition = 45;
+                    else if (row === 7) startPosition = 80;
+                    else if (row === 8) startPosition = 80;
                 }
                 
                 // 좌석 행에 시작 위치 적용
