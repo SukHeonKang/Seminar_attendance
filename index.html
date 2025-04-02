@@ -93,7 +93,9 @@
         .seats-row {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
+            justify-content: flex-start;
+            min-width: 300px;
+            position: relative;
         }
         .seat {
             width: 30px;
@@ -308,39 +310,42 @@
                 // A구역 정렬
                 if (sectionClass === 'section-a') {
                     // 이미지와 일치하도록 각 행마다 좌석 정렬 조정
-                    if (row === 1) startPosition = 0;
-                    else if (row === 2) startPosition = 0;
-                    else if (row === 3) startPosition = 0;
-                    else if (row === 4) startPosition = 0;
-                    else if (row === 5) startPosition = 0;
-                    else if (row === 6) startPosition = 0;
-                    else if (row === 7) startPosition = 0;
-                    else if (row === 8) startPosition = 0;
+                    if (row === 1) startPosition = 60;      // 첫 번째 열은 오른쪽으로 이동
+                    else if (row === 2) startPosition = 0;  // 두 번째 열은 왼쪽에서 시작
+                    else if (row === 3) startPosition = 30; // 세 번째 열은 약간 오른쪽으로
+                    else if (row === 4) startPosition = 30; // 네 번째 열도 약간 오른쪽으로
+                    else if (row === 5) startPosition = 60; // 다섯 번째 열은 더 오른쪽으로
+                    else if (row === 6) startPosition = 60; // 여섯 번째 열도 더 오른쪽으로
+                    else if (row === 7) startPosition = 90; // 일곱 번째 열은 훨씬 오른쪽으로
+                    else if (row === 8) startPosition = 90; // 여덟 번째 열도 훨씬 오른쪽으로
                 } 
                 // B구역 정렬
                 else if (sectionClass === 'section-b') {
                     // 각 행에 따른 시작 위치 조정
-                    if (row === 1) startPosition = 0;
-                    else if (row === 2) startPosition = 0;
+                    if (row === 1) startPosition = 60;
+                    else if (row === 2) startPosition = 30;
                     else if (row === 3) startPosition = 0;
                     else if (row === 4) startPosition = 0;
                     else if (row === 5) startPosition = 0;
                     else if (row === 6) startPosition = 0;
                     else if (row === 7) startPosition = 0;
-                    else if (row === 8) startPosition = 0;
+                    else if (row === 8) startPosition = 30;
                 }
                 // C구역 정렬
                 else if (sectionClass === 'section-c') {
                     // 각 행에 따른 시작 위치 조정
-                    if (row === 1) startPosition = 0;
+                    if (row === 1) startPosition = 60;
                     else if (row === 2) startPosition = 0;
-                    else if (row === 3) startPosition = 0;
-                    else if (row === 4) startPosition = 0;
-                    else if (row === 5) startPosition = 0;
-                    else if (row === 6) startPosition = 0;
-                    else if (row === 7) startPosition = 0;
-                    else if (row === 8) startPosition = 0;
+                    else if (row === 3) startPosition = 30;
+                    else if (row === 4) startPosition = 30;
+                    else if (row === 5) startPosition = 60;
+                    else if (row === 6) startPosition = 60;
+                    else if (row === 7) startPosition = 90;
+                    else if (row === 8) startPosition = 90;
                 }
+                
+                // 좌석 행에 시작 위치 적용
+                rowContainer.style.paddingLeft = startPosition + 'px';
                 
                 for (let i = 1; i <= seatCount; i++) {
                     const seat = document.createElement('div');
