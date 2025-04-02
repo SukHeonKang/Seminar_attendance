@@ -196,7 +196,7 @@
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background-color: #8fd694;"></div>
-                <span>B구역/span>
+                <span>B구역</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background-color: #f9a875;"></div>
@@ -296,14 +296,7 @@
                     monthsLabel.className = 'months-label';
                     monthsLabel.textContent = row + '열';
                     monthContainer.appendChild(monthsLabel);
-                } else {
-                    // 다른 섹션일 경우 빈 공간
-                    if (row === 1) {
-                        const monthsLabel = document.createElement('div');
-                        monthsLabel.style.width = '60px';
-                        monthsLabel.style.visibility = 'hidden';
-                        monthContainer.appendChild(monthsLabel);
-                    }
+                }
                 }
                 
                 const seatsRow = document.createElement('div');
