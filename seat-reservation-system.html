@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>콘서트 좌석 예약 시스템</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .stage {
+            background-color: #daa520;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .legend {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+        .seating-area {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .section {
+            flex: 1;
+            margin: 0 10px;
+            text-align: center;
+        }
+        .section-title {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .section-a .section-title {
+            background-color: #809bce;
+        }
+        .section-b .section-title {
+            background-color: #8fd694;
+        }
+        .section-c .section-title {
+            background-color: #f9a875;
+        }
+        .month-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .month-label {
+            width: 60px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ccc;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+        .seats-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .seat {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2px;
+            border-radius: 3px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .seat:hover {
+            opacity: 0.8;
+        }
+        .section-a .seat {
+            background-color: #809bce;
+        }
+        .section-b .seat {
+            background-color: #8fd694;
+        }
+        .section-c .seat {
+            background-color: #f9a875;
+        }
+        .seat.selected {
+            background-color: #ff5e5e;
+            transform: scale(1.1);
+        }
+        .summary {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .summary h2 {
+            margin-top: 0;
+        }
+        .summary-details {
+            display: flex;
+            justify-content: space-between;
+        }
+        .summary-section {
+            flex: 1;
+        }
+        .door {
+            display: inline-block;
+            padding: 5px 15px;
+            background-color: #daa520;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .doors {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .month-container {
+            display: flex;
+            margin-bottom: 5px;
+        }
+        .months-label {
+            width: 60px;
+            background-color: #daa520;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px 0 0 5px;
+            writing-mode: vertical-lr;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>콘서트 좌석 예약 시스템</h1>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #809bce;"></div>
+                <span>구역</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #8fd694;"></div>
+                <span>열</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #f9a875;"></div>
+                <span>좌석 번호</span>
+            </div>
+        </div>
+        
+        <div class="stage">STAGE</div>
+        
+        <div class="seating-area">
+            <div class="section section-a">
+                <div class="section-title">A구역</div>
+                <div id="section-a-seats"></div>
+            </div>
+            
+            <div class="section section-b">
+                <div class="section-title">B구역</div>
+                <div id="section-b-seats"></div>
+            </div>
+            
+            <div class="section section-c">
+                <div class="section-title">C구역</div>
+                <div id="section-c-seats"></div>
+            </div>
+        </div>
+        
+        <div class="doors">
+            <div class="door">문2</div>
+            <div class="door">문1</div>
+        </div>
+        
+        <div class="summary">
+            <h2>선택된 좌석 정보</h2>
+            <div class="summary-details">
+                <div class="summary-section">
+                    <p>A구역: <span id="section-a-count">0</span>석</p>
+                </div>
+                <div class="summary-section">
+                    <p>B구역: <span id="section-b-count">0</span>석</p>
+                </div>
+                <div class="summary-section">
+                    <p>C구역: <span id="section-c-count">0</span>석</p>
+                </div>
+                <div class="summary-section">
+                    <p>총 선택: <span id="total-count">0</span>석</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 좌석 데이터 정의
+        const seatData = {
+            sectionA: {
+                // 월별 좌석 수
+                1: 5, 2: 7, 3: 6, 4: 6, 5: 5, 6: 5, 7: 4, 8: 3
+            },
+            sectionB: {
+                1: 5, 2: 6, 3: 7, 4: 8, 5: 9, 6: 10, 7: 11, 8: 8
+            },
+            sectionC: {
+                1: 5, 2: 7, 3: 6, 4: 6, 5: 5, 6: 5, 7: 4, 8: 3
+            }
+        };
+
+        // 좌석 카운트 변수
+        let counts = {
+            sectionA: 0,
+            sectionB: 0,
+            sectionC: 0,
+            total: 0
+        };
+
+        // 좌석 생성 함수
+        function createSeats() {
+            createSectionSeats('section-a-seats', 'section-a', seatData.sectionA);
+            createSectionSeats('section-b-seats', 'section-b', seatData.sectionB);
+            createSectionSeats('section-c-seats', 'section-c', seatData.sectionC);
+        }
+
+        // 섹션별 좌석 생성
+        function createSectionSeats(containerId, sectionClass, monthData) {
+            const container = document.getElementById(containerId);
+            
+            // 월 라벨과 좌석 생성
+            for (let month = 1; month <= 8; month++) {
+                const monthContainer = document.createElement('div');
+                monthContainer.className = 'month-container';
+                
+                // 월 라벨 (맨 왼쪽에 한번만)
+                if (containerId === 'section-a-seats') {
+                    const monthsLabel = document.createElement('div');
+                    monthsLabel.className = 'months-label';
+                    monthsLabel.textContent = month + '월';
+                    monthContainer.appendChild(monthsLabel);
+                } else {
+                    // 다른 섹션일 경우 빈 공간
+                    if (month === 1) {
+                        const monthsLabel = document.createElement('div');
+                        monthsLabel.style.width = '60px';
+                        monthsLabel.style.visibility = 'hidden';
+                        monthContainer.appendChild(monthsLabel);
+                    }
+                }
+                
+                const seatsRow = document.createElement('div');
+                seatsRow.className = 'seats-row';
+                
+                // 해당 월의 좌석 수만큼 생성
+                const seatCount = monthData[month] || 0;
+                for (let i = 1; i <= seatCount; i++) {
+                    const seat = document.createElement('div');
+                    seat.className = `seat ${sectionClass}`;
+                    seat.textContent = i;
+                    seat.dataset.section = sectionClass.replace('section-', '');
+                    seat.dataset.month = month;
+                    seat.dataset.number = i;
+                    
+                    // 좌석 클릭 이벤트
+                    seat.addEventListener('click', toggleSeat);
+                    
+                    seatsRow.appendChild(seat);
+                }
+                
+                monthContainer.appendChild(seatsRow);
+                container.appendChild(monthContainer);
+            }
+        }
+
+        // 좌석 선택/해제 토글
+        function toggleSeat() {
+            this.classList.toggle('selected');
+            
+            const section = this.dataset.section;
+            const isSelected = this.classList.contains('selected');
+            
+            // 선택/해제에 따라 카운트 업데이트
+            if (isSelected) {
+                counts['section' + section.toUpperCase()]++;
+                counts.total++;
+            } else {
+                counts['section' + section.toUpperCase()]--;
+                counts.total--;
+            }
+            
+            // UI 업데이트
+            updateCounts();
+        }
+
+        // 카운트 업데이트
+        function updateCounts() {
+            document.getElementById('section-a-count').textContent = counts.sectionA;
+            document.getElementById('section-b-count').textContent = counts.sectionB;
+            document.getElementById('section-c-count').textContent = counts.sectionC;
+            document.getElementById('total-count').textContent = counts.total;
+        }
+
+        // 페이지 로드 시 좌석 생성
+        window.addEventListener('DOMContentLoaded', createSeats);
+    </script>
+</body>
+</html>
