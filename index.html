@@ -319,38 +319,42 @@
                 // 각 구역별 좌석 정렬 - 실제 이미지와 동일하게 배치
                 let startPosition = 0;
                 
-                // A구역 정렬 - 이미지에 맞게 정확히 조정
+                // A구역 정렬 - v22 코드 기준으로 이동
                 if (sectionClass === 'section-a') {
-                    if (row === 1) startPosition = 50;      // 첫 번째 열 (이미지 기준)
-                    else if (row === 2) startPosition = 0;  // 두 번째 열은 왼쪽에서 시작
-                    else if (row === 3) startPosition = 10; // 세 번째 열
-                    else if (row === 4) startPosition = 10; // 네 번째 열
-                    else if (row === 5) startPosition = 45; // 다섯 번째 열
-                    else if (row === 6) startPosition = 45; // 여섯 번째 열
-                    else if (row === 7) startPosition = 80; // 일곱 번째 열
-                    else if (row === 8) startPosition = 80; // 여덟 번째 열
+                    // v22 코드의 기존 위치에서 요청한 칸수만큼 이동
+                    // 좌석 1칸을 약 34px로 계산 (좌석 30px + 여백 4px)
+                    if (row === 1) startPosition = 50 + 34;       // 1열: 기존 위치 + 1칸 오른쪽
+                    else if (row === 2) startPosition = 0;        // 2열: 기존 위치 유지
+                    else if (row === 3) startPosition = 10;       // 3열: 기존 위치 유지
+                    else if (row === 4) startPosition = 10 - 17;  // 4열: 기존 위치 - 0.5칸 왼쪽
+                    else if (row === 5) startPosition = 45 - 34;  // 5열: 기존 위치 - 1칸 왼쪽
+                    else if (row === 6) startPosition = 45 - 51;  // 6열: 기존 위치 - 1.5칸 왼쪽
+                    else if (row === 7) startPosition = 80 - 68;  // 7열: 기존 위치 - 2칸 왼쪽
+                    else if (row === 8) startPosition = 80 - 68;  // 8열: 기존 위치 - 2칸 왼쪽
                 } 
-                // B구역 정렬 - 중앙 구역
+                // B구역 정렬 - A구역 끝에서 약 10px 떨어진 위치에서 시작
                 else if (sectionClass === 'section-b') {
-                    if (row === 1) startPosition = 0;
-                    else if (row === 2) startPosition = 0;
-                    else if (row === 3) startPosition = 0;
-                    else if (row === 4) startPosition = 0;
-                    else if (row === 5) startPosition = 0;
-                    else if (row === 6) startPosition = 0;
-                    else if (row === 7) startPosition = 0;
-                    else if (row === 8) startPosition = 0;
+                    // A구역 끝 + 10px = B구역 시작
+                    if (row === 1) startPosition = 264;      // 1열 B구역 시작
+                    else if (row === 2) startPosition = 248; // 2열 B구역 시작
+                    else if (row === 3) startPosition = 224; // 3열 B구역 시작
+                    else if (row === 4) startPosition = 207; // 4열 B구역 시작
+                    else if (row === 5) startPosition = 191; // 5열 B구역 시작
+                    else if (row === 6) startPosition = 174; // 6열 B구역 시작
+                    else if (row === 7) startPosition = 158; // 7열 B구역 시작
+                    else if (row === 8) startPosition = 124; // 8열 B구역 시작
                 }
-                // C구역 정렬 - A구역과 대칭
+                // C구역 정렬 - B구역을 기준으로 A구역과 대칭
                 else if (sectionClass === 'section-c') {
-                    if (row === 1) startPosition = 50;
-                    else if (row === 2) startPosition = 0;
-                    else if (row === 3) startPosition = 10;
-                    else if (row === 4) startPosition = 10;
-                    else if (row === 5) startPosition = 45;
-                    else if (row === 6) startPosition = 45;
-                    else if (row === 7) startPosition = 80;
-                    else if (row === 8) startPosition = 80;
+                    // B구역 끝 + 10px 간격 = C구역 시작
+                    if (row === 1) startPosition = 444;      // 1열 C구역 시작
+                    else if (row === 2) startPosition = 462; // 2열 C구역 시작
+                    else if (row === 3) startPosition = 472; // 3열 C구역 시작
+                    else if (row === 4) startPosition = 489; // 4열 C구역 시작
+                    else if (row === 5) startPosition = 507; // 5열 C구역 시작
+                    else if (row === 6) startPosition = 524; // 6열 C구역 시작
+                    else if (row === 7) startPosition = 542; // 7열 C구역 시작
+                    else if (row === 8) startPosition = 406; // 8열 C구역 시작
                 }
                 
                 // 좌석 행에 시작 위치 적용
