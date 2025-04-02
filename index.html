@@ -48,15 +48,13 @@
             border-radius: 3px;
             margin-right: 5px;
         }
-        .seating-area {
+        .section-headers {
             display: flex;
-            justify-content: flex-start; /* 변경: space-between에서 flex-start로 수정 */
+            justify-content: center;
             margin-bottom: 20px;
         }
-        .section {
-            margin: 0; /* 변경: 섹션 간 마진 제거 */
-            padding: 0; /* 변경: 섹션 간 패딩 제거 */
-            text-align: center;
+        .section-header {
+            margin: 0 20px;
         }
         .section-title {
             display: inline-block;
@@ -64,23 +62,27 @@
             border-radius: 5px;
             color: white;
             font-weight: bold;
-            margin-bottom: 10px;
         }
-        .section-a .section-title {
+        .section-a-title {
             background-color: #809bce;
         }
-        .section-b .section-title {
+        .section-b-title {
             background-color: #8fd694;
         }
-        .section-c .section-title {
+        .section-c-title {
             background-color: #f9a875;
         }
-        .month-row {
+        .seating-rows {
             display: flex;
-            align-items: center;
-            margin-bottom: 5px;
+            flex-direction: column;
+            align-items: flex-start;
         }
-        .month-label {
+        .row-container {
+            display: flex;
+            margin-bottom: 5px;
+            align-items: flex-start;
+        }
+        .row-label {
             width: 60px;
             height: 30px;
             display: flex;
@@ -90,12 +92,9 @@
             border-radius: 5px;
             margin-right: 5px;
         }
-        .seats-row {
+        .seats-container {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            min-width: 300px;
-            position: relative;
+            flex-wrap: nowrap;
         }
         .seat {
             width: 30px;
@@ -114,13 +113,13 @@
         .seat:hover {
             opacity: 0.8;
         }
-        .section-a .seat {
+        .seat-a {
             background-color: #809bce;
         }
-        .section-b .seat {
+        .seat-b {
             background-color: #8fd694;
         }
-        .section-c .seat {
+        .seat-c {
             background-color: #f9a875;
         }
         .seat.selected {
@@ -144,35 +143,6 @@
         .summary-section {
             flex: 1;
         }
-        .door {
-            display: inline-block;
-            padding: 5px 15px;
-            background-color: #daa520;
-            color: white;
-            border-radius: 5px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .doors {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .month-container {
-            display: flex;
-            margin-bottom: 5px;
-        }
-        .months-label {
-            width: 60px;
-            background-color: #ccc;
-            color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 5px;
-            padding: 5px 0;
-            margin-right: 5px;
-        }
     </style>
 </head>
 <body>
@@ -182,36 +152,34 @@
         <div class="legend">
             <div class="legend-item">
                 <div class="legend-color" style="background-color: #809bce;"></div>
-                <span>구역</span>
+                <span>A구역</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background-color: #8fd694;"></div>
-                <span>열</span>
+                <span>B구역</span>
             </div>
             <div class="legend-item">
                 <div class="legend-color" style="background-color: #f9a875;"></div>
-                <span>좌석 번호</span>
+                <span>C구역</span>
             </div>
         </div>
         
         <div class="stage">STAGE</div>
         
-        <div class="seating-area">
-            <div class="section section-a">
-                <div class="section-title">A구역</div>
-                <div id="section-a-seats"></div>
+        <div class="section-headers">
+            <div class="section-header">
+                <div class="section-title section-a-title">A구역</div>
             </div>
-            
-            <div class="section section-b">
-                <div class="section-title">B구역</div>
-                <div id="section-b-seats"></div>
+            <div class="section-header">
+                <div class="section-title section-b-title">B구역</div>
             </div>
-            
-            <div class="section section-c">
-                <div class="section-title">C구역</div>
-                <div id="section-c-seats"></div>
+            <div class="section-header">
+                <div class="section-title section-c-title">C구역</div>
             </div>
         </div>
+        
+        <!-- 좌석 배치는 이곳에 동적으로 생성됩니다 -->
+        <div id="seating-rows" class="seating-rows"></div>
         
         <div class="summary">
             <h2>선택된 좌석 정보</h2>
@@ -233,10 +201,9 @@
     </div>
 
     <script>
-        // 좌석 데이터 정의 - 이미지의 실제 좌석 배치와 일치하도록 수정
+        // 좌석 데이터 정의
         const seatData = {
             sectionA: {
-                // 열별 좌석 수
                 1: 5, 2: 7, 3: 6, 4: 6, 5: 5, 6: 5, 7: 4, 8: 3
             },
             sectionB: {
@@ -257,110 +224,102 @@
 
         // 좌석 생성 함수
         function createSeats() {
-            createSectionSeats('section-a-seats', 'section-a', seatData.sectionA);
-            createSectionSeats('section-b-seats', 'section-b', seatData.sectionB);
-            createSectionSeats('section-c-seats', 'section-c', seatData.sectionC);
-        }
-
-        // 섹션별 좌석 생성
-        function createSectionSeats(containerId, sectionClass, monthData) {
-            const container = document.getElementById(containerId);
+            const seatingRowsContainer = document.getElementById('seating-rows');
             
-            // 열 라벨과 좌석 생성
+            // 1~8열까지 생성
             for (let row = 1; row <= 8; row++) {
-                const monthContainer = document.createElement('div');
-                monthContainer.className = 'month-container';
+                const rowContainer = document.createElement('div');
+                rowContainer.className = 'row-container';
                 
                 // 7열과 8열 사이 공백 추가
                 if (row === 8) {
-                    monthContainer.style.marginTop = '20px';
+                    rowContainer.style.marginTop = '20px';
                 }
                 
-                // 열 라벨 (맨 왼쪽에 한번만)
-                if (containerId === 'section-a-seats') {
-                    const monthsLabel = document.createElement('div');
-                    monthsLabel.className = 'months-label';
-                    monthsLabel.textContent = row + '열';
-                    monthContainer.appendChild(monthsLabel);
-                } else {
-                    // 다른 섹션일 경우 빈 공간
-                    if (row === 1) {
-                        const monthsLabel = document.createElement('div');
-                        monthsLabel.style.width = '60px';
-                        monthsLabel.style.visibility = 'hidden';
-                        monthContainer.appendChild(monthsLabel);
-                    }
-                }
+                // 열 라벨
+                const rowLabel = document.createElement('div');
+                rowLabel.className = 'row-label';
+                rowLabel.textContent = row + '열';
+                rowContainer.appendChild(rowLabel);
                 
-                const seatsRow = document.createElement('div');
-                seatsRow.className = 'seats-row';
+                // 좌석 컨테이너
+                const seatsContainer = document.createElement('div');
+                seatsContainer.className = 'seats-container';
                 
-                // 해당 월의 좌석 수만큼 생성
-                const seatCount = monthData[row] || 0;
+                // A구역 좌석 생성
+                createSectionSeats(seatsContainer, 'a', row, seatData.sectionA[row] || 0);
                 
-                // 좌석 행 컨테이너
-                const rowContainer = document.createElement('div');
-                rowContainer.className = 'seats-row';
+                // B구역 좌석 생성
+                createSectionSeats(seatsContainer, 'b', row, seatData.sectionB[row] || 0);
                 
-                // 각 구역별 좌석 정렬 - 실제 이미지와 동일하게 배치
-                let startPosition = 0;
+                // C구역 좌석 생성
+                createSectionSeats(seatsContainer, 'c', row, seatData.sectionC[row] || 0);
                 
-                // A구역 정렬
-                if (sectionClass === 'section-a') {
-                    // 이미지와 일치하도록 각 행마다 좌석 정렬 조정
-                    if (row === 1) startPosition = 60;      // 첫 번째 열은 오른쪽으로 이동
-                    else if (row === 2) startPosition = 0;  // 두 번째 열은 왼쪽에서 시작
-                    else if (row === 3) startPosition = 30; // 세 번째 열은 약간 오른쪽으로
-                    else if (row === 4) startPosition = 30; // 네 번째 열도 약간 오른쪽으로
-                    else if (row === 5) startPosition = 60; // 다섯 번째 열은 더 오른쪽으로
-                    else if (row === 6) startPosition = 60; // 여섯 번째 열도 더 오른쪽으로
-                    else if (row === 7) startPosition = 90; // 일곱 번째 열은 훨씬 오른쪽으로
-                    else if (row === 8) startPosition = 90; // 여덟 번째 열도 훨씬 오른쪽으로
-                } 
-                // B구역 정렬
-                else if (sectionClass === 'section-b') {
-                    // 각 행에 따른 시작 위치 조정
-                    if (row === 1) startPosition = 60;
-                    else if (row === 2) startPosition = 30;
-                    else if (row === 3) startPosition = 0;
-                    else if (row === 4) startPosition = 0;
-                    else if (row === 5) startPosition = 0;
-                    else if (row === 6) startPosition = 0;
-                    else if (row === 7) startPosition = 0;
-                    else if (row === 8) startPosition = 30;
-                }
-                // C구역 정렬
-                else if (sectionClass === 'section-c') {
-                    // 각 행에 따른 시작 위치 조정
-                    if (row === 1) startPosition = 60;
-                    else if (row === 2) startPosition = 0;
-                    else if (row === 3) startPosition = 30;
-                    else if (row === 4) startPosition = 30;
-                    else if (row === 5) startPosition = 60;
-                    else if (row === 6) startPosition = 60;
-                    else if (row === 7) startPosition = 90;
-                    else if (row === 8) startPosition = 90;
-                }
+                rowContainer.appendChild(seatsContainer);
+                seatingRowsContainer.appendChild(rowContainer);
+            }
+        }
+
+        // 구역별 좌석 생성
+        function createSectionSeats(container, section, row, seatCount) {
+            // 각 구역별 좌석 정렬 - 첫 좌석의 시작 위치 계산
+            let startPosition = 0;
+            
+            // A구역 정렬
+            if (section === 'a') {
+                if (row === 1) startPosition = 60;
+                else if (row === 2) startPosition = 0;
+                else if (row === 3) startPosition = 30;
+                else if (row === 4) startPosition = 30;
+                else if (row === 5) startPosition = 60;
+                else if (row === 6) startPosition = 60;
+                else if (row === 7) startPosition = 90;
+                else if (row === 8) startPosition = 90;
+            } 
+            // B구역 정렬
+            else if (section === 'b') {
+                if (row === 1) startPosition = 0;
+                else if (row === 2) startPosition = 0;
+                else if (row === 3) startPosition = 0;
+                else if (row === 4) startPosition = 0;
+                else if (row === 5) startPosition = 0;
+                else if (row === 6) startPosition = 0;
+                else if (row === 7) startPosition = 0;
+                else if (row === 8) startPosition = 0;
+            }
+            // C구역 정렬
+            else if (section === 'c') {
+                if (row === 1) startPosition = 0;
+                else if (row === 2) startPosition = 0;
+                else if (row === 3) startPosition = 0;
+                else if (row === 4) startPosition = 0;
+                else if (row === 5) startPosition = 0;
+                else if (row === 6) startPosition = 0;
+                else if (row === 7) startPosition = 0;
+                else if (row === 8) startPosition = 0;
+            }
+            
+            // 시작 위치 적용을 위한 Spacer 요소 (첫번째 구역만)
+            if (startPosition > 0) {
+                const spacer = document.createElement('div');
+                spacer.style.width = startPosition + 'px';
+                spacer.style.display = 'inline-block';
+                container.appendChild(spacer);
+            }
+            
+            // 좌석 생성
+            for (let i = 1; i <= seatCount; i++) {
+                const seat = document.createElement('div');
+                seat.className = `seat seat-${section}`;
+                seat.textContent = i;
+                seat.dataset.section = section;
+                seat.dataset.row = row;
+                seat.dataset.number = i;
                 
-                // 좌석 행에 시작 위치 적용
-                rowContainer.style.paddingLeft = startPosition + 'px';
+                // 좌석 클릭 이벤트
+                seat.addEventListener('click', toggleSeat);
                 
-                for (let i = 1; i <= seatCount; i++) {
-                    const seat = document.createElement('div');
-                    seat.className = `seat ${sectionClass}`;
-                    seat.textContent = i;
-                    seat.dataset.section = sectionClass.replace('section-', '');
-                    seat.dataset.row = row;
-                    seat.dataset.number = i;
-                    
-                    // 좌석 클릭 이벤트
-                    seat.addEventListener('click', toggleSeat);
-                    
-                    rowContainer.appendChild(seat);
-                }
-                
-                monthContainer.appendChild(rowContainer);
-                container.appendChild(monthContainer);
+                container.appendChild(seat);
             }
         }
 
